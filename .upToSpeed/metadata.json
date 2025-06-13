@@ -1,0 +1,35 @@
+{
+  "packageName": "puzzles",
+  "packageVersion": 1,
+  "hash": "d0ad16280dfe0139abfa4db6c22de58c5c48b04a",
+  "numberOfTours": 4,
+  "titleOfTours": [
+    "1.1: Circuit Protocol Codebase Overview",
+    "2.1: CAT Tails: Overview",
+    "3.1: Statutes: Overview",
+    "Want to learn more?"
+  ],
+  "totalNumberOfSteps": 34,
+  "filesCovered": [
+    "README.md",
+    "circuit_puzzles/__init__.py",
+    "circuit_puzzles/governance.clsp",
+    "circuit_puzzles/include/statutes_utils.clib",
+    "circuit_puzzles/programs/vault_borrow.clsp",
+    "circuit_puzzles/surplus_auction.clsp",
+    "circuit_puzzles/programs/surplus_start_auction.clsp",
+    "circuit_puzzles/programs/surplus_bid.clsp",
+    "circuit_puzzles/programs/surplus_settle.clsp",
+    "circuit_puzzles/include/recharge_auction.clib",
+    "circuit_puzzles/recharge_auction.clsp",
+    "circuit_puzzles/run_tail.clsp",
+    "circuit_puzzles/byc_tail.clsp",
+    "circuit_puzzles/crt_tail.clsp",
+    "circuit_puzzles/savings_vault.clsp",
+    "circuit_puzzles/include/cat_truths.clib",
+    "circuit_puzzles/statutes.clsp",
+    "circuit_puzzles/programs/statutes_mutation.clsp",
+    "circuit_puzzles/programs/statutes_update_price.clsp"
+  ],
+  "numberOfFilesCovered": 19
+}

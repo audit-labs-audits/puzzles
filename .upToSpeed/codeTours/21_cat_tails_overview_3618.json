@@ -1,0 +1,111 @@
+{
+  "title": "2.1: CAT Tails: Overview",
+  "id": "SVu90jkhMRPESHLRvmZwVqLVMN8BrYnulmbOYVfLT2M=",
+  "originalId": 3618,
+  "position": 2,
+  "steps": [
+    {
+      "type": "textOnly",
+      "description": "This walkthrough covers four files in the **CAT Tails** component and how they fit together:\n\n* `circuit_puzzles/include/cat_truths.clib`: shared data library for CAT truth structs.\n* `circuit_puzzles/run_tail.clsp`: a generic wrapper puzzle that enforces **TAIL** execution.\n* `circuit_puzzles/byc_tail.clsp`: the BYC token–specific **TAIL** logic.\n* `circuit_puzzles/crt_tail.clsp`: the CRT token–specific **TAIL** logic.\n\nTogether they define common CAT data, a runner puzzle, and per-token rules.",
+      "title": "",
+      "id": "42592"
+    },
+    {
+      "type": "highlight",
+      "description": "The `cat_truth_data_to_truth_struct` `defun-inline` packs the inner puzzle hash, the `CAT` struct, the token’s ID, and the coin info into a 2-level cons used by all `CAT` `TAILs` to extract state.",
+      "file": "circuit_puzzles/include/cat_truths.clib",
+      "highlight": [
+        {
+          "start": 2,
+          "end": 13
+        }
+      ],
+      "title": "",
+      "id": "42593"
+    },
+    {
+      "type": "highlight",
+      "description": "This comment documents the layout of the `CAT Truths` data as `((inner_puzhash . cat_struct) . (my_id . (parent_info puzhash amount)))`.",
+      "file": "circuit_puzzles/include/cat_truths.clib",
+      "highlight": [
+        {
+          "start": 15,
+          "end": 15
+        }
+      ],
+      "title": "",
+      "id": "42594"
+    },
+    {
+      "type": "highlight",
+      "description": "In `run_tail.clsp`, `(mod (tail_reveal limitations_solution conditions) …)` declares a puzzle that accepts the revealed TAIL, a limitations solution, and a list of conditions.",
+      "file": "circuit_puzzles/run_tail.clsp",
+      "highlight": [
+        {
+          "start": 2,
+          "end": 2
+        }
+      ],
+      "title": "",
+      "id": "42595"
+    },
+    {
+      "type": "highlight",
+      "description": "This block builds a `CREATE_COIN` condition that invokes the revealed `tail_reveal` at amount 0, passing `limitations_solution` as the tail’s solution for enforcing limitations.",
+      "file": "circuit_puzzles/run_tail.clsp",
+      "highlight": [
+        {
+          "start": 5,
+          "end": 11
+        }
+      ],
+      "title": "",
+      "id": "42596"
+    },
+    {
+      "type": "highlight",
+      "description": "The BYC TAIL’s `(mod ...)` signature lists `RUN_TAIL_MOD_HASH`, `STATUTES_STRUCT`, `Truths`, flags, `delta`, `inner_conditions`, and a destructured **solution** tuple with vault and statutes parameters.",
+      "file": "circuit_puzzles/byc_tail.clsp",
+      "highlight": [
+        {
+          "start": 1,
+          "end": 19
+        }
+      ],
+      "title": "",
+      "id": "42597"
+    },
+    {
+      "type": "highlight",
+      "description": "The **CRT TAIL**’s main `(mod …)` signature in `crt_tail.clsp` mirrors **BYC**’s arguments: `RUN_TAIL_MOD_HASH`, `STATUTES_STRUCT`, `Truths`, flags, `delta`, `inner_conditions`, and `solution`.",
+      "file": "circuit_puzzles/crt_tail.clsp",
+      "highlight": [
+        {
+          "start": 5,
+          "end": 13
+        }
+      ],
+      "title": "",
+      "id": "42598"
+    },
+    {
+      "type": "highlight",
+      "description": "To simplify downstream assertions, this helper function bundles two values into a 2-tuple: the tree hash of the statutes and their full puzzle hash.",
+      "file": "circuit_puzzles/crt_tail.clsp",
+      "highlight": [
+        {
+          "start": 23,
+          "end": 28
+        }
+      ],
+      "title": "",
+      "id": "42599"
+    },
+    {
+      "type": "textOnly",
+      "description": "In one sentence: `cat_truths.clib` defines the shared CAT data structure, `run_tail.clsp` enforces that the **TAIL** is invoked via a `CREATE_COIN` condition, and `byc_tail.clsp` and `crt_tail.clsp` implement the token-specific minting and melting rules for BYC and CRT respectively.",
+      "title": "",
+      "id": "42600"
+    }
+  ]
+}

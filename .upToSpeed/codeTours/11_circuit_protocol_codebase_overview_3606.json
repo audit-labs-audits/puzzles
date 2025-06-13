@@ -1,0 +1,209 @@
+{
+  "title": "1.1: Circuit Protocol Codebase Overview",
+  "id": "FWFYa0brcAQvHXa1M5KOPGiwiJlyaT2tq16lsK298m8=",
+  "originalId": 3606,
+  "position": 1,
+  "steps": [
+    {
+      "type": "highlight",
+      "description": "These lines introduce the **Circuit puzzles**—the building blocks of the protocol used to create **Bytecash (BYC)**—and describe this `Python package` containing all puzzles.",
+      "file": "README.md",
+      "highlight": [
+        {
+          "start": 1,
+          "end": 10
+        }
+      ],
+      "title": "",
+      "id": "42528"
+    },
+    {
+      "type": "highlight",
+      "description": "The `__init__.py` dynamically collects all `.clsp` puzzles into **PUZZLE_PATHS** and configures the **CLVM builder** with the `include/` folder, reflecting the structure of puzzles and shared libraries.",
+      "file": "circuit_puzzles/__init__.py",
+      "highlight": [
+        {
+          "start": 11,
+          "end": 12
+        }
+      ],
+      "title": "",
+      "id": "43243"
+    },
+    {
+      "type": "highlight",
+      "description": "The `governance puzzle mod signature` (lines 1–8) curries CRT tail, mod hashes, statutes, and receives an `inner_puzzle` argument to enable owner mode, illustrating the **wrapped-puzzle pattern**.",
+      "file": "circuit_puzzles/governance.clsp",
+      "highlight": [
+        {
+          "start": 1,
+          "end": 8
+        }
+      ],
+      "title": "",
+      "id": "42529"
+    },
+    {
+      "type": "highlight",
+      "description": "All mutable protocol parameters are centralized here as `STATUTE_*` constants (indices −4 through 39), powering parameter checks across puzzles.",
+      "file": "circuit_puzzles/include/statutes_utils.clib",
+      "highlight": [
+        {
+          "start": 5,
+          "end": 30
+        }
+      ],
+      "title": "",
+      "id": "42530"
+    },
+    {
+      "type": "highlight",
+      "description": "A sample user operation puzzle signature: `vault_borrow.clsp` curries `CAT`, `BYC_TAIL`, `RUN_TAIL`, and unpacks the vault state and borrow-specific arguments to implement the borrow action.",
+      "file": "circuit_puzzles/programs/vault_borrow.clsp",
+      "highlight": [
+        {
+          "start": 1,
+          "end": 11
+        }
+      ],
+      "title": "",
+      "id": "42531"
+    },
+    {
+      "type": "highlight",
+      "description": "The surplus auction singleton mod signature binds the `OPERATIONS` list, CAT/CRT tails, statutes, launcher ID, TTLs, lot size, last bid, and lineage proof, setting up a three-phase auction workflow.",
+      "file": "circuit_puzzles/surplus_auction.clsp",
+      "highlight": [
+        {
+          "start": 1,
+          "end": 8
+        }
+      ],
+      "title": "",
+      "id": "42532"
+    },
+    {
+      "type": "highlight",
+      "description": "The start phase (`surplus_start_auction.clsp`) signature includes payout/treasury `mods`, auction parameters, and initial lot state in its `mod` arguments.",
+      "file": "circuit_puzzles/programs/surplus_start_auction.clsp",
+      "highlight": [
+        {
+          "start": 1,
+          "end": 5
+        }
+      ],
+      "title": "",
+      "id": "42533"
+    },
+    {
+      "type": "highlight",
+      "description": "The bid phase (`surplus_bid.clsp`) signature binds an `OFFER_MOD_HASH`, the pooled auction state, lineage proof, input conditions, and bid-specific args (bid amount, target puzzle hash, timestamp, and coin info).",
+      "file": "circuit_puzzles/programs/surplus_bid.clsp",
+      "highlight": [
+        {
+          "start": 5,
+          "end": 12
+        }
+      ],
+      "title": "",
+      "id": "42534"
+    },
+    {
+      "type": "highlight",
+      "description": "The settle phase (`surplus_settle.clsp`) signature uses **payout** and **run-tail mods** plus parameters for timestamp, payout coin, winning bid amount, and **lineage proof** to finalize auction settlement.",
+      "file": "circuit_puzzles/programs/surplus_settle.clsp",
+      "highlight": [
+        {
+          "start": 5,
+          "end": 12
+        }
+      ],
+      "title": "",
+      "id": "42535"
+    },
+    {
+      "type": "highlight",
+      "description": "The `deposit-to-treasury` helper in recharge auctions enforces ring-wide treasury deposits and cross-checks announcements against statutes (lines 7–14).",
+      "file": "circuit_puzzles/include/recharge_auction.clib",
+      "highlight": [
+        {
+          "start": 7,
+          "end": 14
+        }
+      ],
+      "title": "",
+      "id": "42536"
+    },
+    {
+      "type": "highlight",
+      "description": "The **recharge auction mod signature** (lines 1–7) curries `BYC tail`, statutes, `launcher ID`, auction parameters, and last bid state for a similar `start→bid→settle` pattern.",
+      "file": "circuit_puzzles/recharge_auction.clsp",
+      "highlight": [
+        {
+          "start": 1,
+          "end": 7
+        }
+      ],
+      "title": "",
+      "id": "42537"
+    },
+    {
+      "type": "highlight",
+      "description": "The **run-tail puzzle** (lines 1–4) forces every spend to invoke the **CAT tail logic** by emitting a `CREATE_COIN` with the `tail_reveal`, ensuring tail enforcement before passing through other conditions.",
+      "file": "circuit_puzzles/run_tail.clsp",
+      "highlight": [
+        {
+          "start": 1,
+          "end": 4
+        }
+      ],
+      "title": "",
+      "id": "42538"
+    },
+    {
+      "type": "highlight",
+      "description": "The `BYC tail wrapper` (lines 1–8) enforces issuance (`delta = 0`) vs. melting (`delta < 0`) semantics by checking `parent_is_cat`, interpreting `delta`, and sequencing announcements through the `solution` arguments.",
+      "file": "circuit_puzzles/byc_tail.clsp",
+      "highlight": [
+        {
+          "start": 1,
+          "end": 8
+        }
+      ],
+      "title": "",
+      "id": "42539"
+    },
+    {
+      "type": "highlight",
+      "description": "The CRT tail wrapper (lines 1–13) handles CRT issuance (via announcer registry or recharge auctions) and melting (via surplus auctions) by validating `approval_mod_hash` positions in `Truths`, binding `delta`, and conditionally issuing or melting CRT.",
+      "file": "circuit_puzzles/crt_tail.clsp",
+      "highlight": [
+        {
+          "start": 1,
+          "end": 13
+        }
+      ],
+      "title": "",
+      "id": "42540"
+    },
+    {
+      "type": "highlight",
+      "description": "The **savings vault puzzle signature** mirrors the **collateral vault** but adds interest accrual parameters (`discounted_balance`, interest **DF factors**, `price_info`) and handles **treasury CAT interactions** for **interest payouts**.",
+      "file": "circuit_puzzles/savings_vault.clsp",
+      "highlight": [
+        {
+          "start": 1,
+          "end": 9
+        }
+      ],
+      "title": "",
+      "id": "42541"
+    },
+    {
+      "type": "textOnly",
+      "description": "Operation programs for recharge auction:\n* `recharge_launch.clsp`\n* `recharge_start_auction.clsp`\n* `recharge_bid.clsp`\n* `recharge_settle.clsp`\n\nUpcoming deep-dive tours by component:\n* `CAT Tails` (2.x)\n* `Statutes` (3.x)\n* `Announcer` (4.x)\n* `Oracle` (5.x)\n* `Treasury` (6.x)\n* `Collateral Vault` (7.x)\n* `Surplus Auction` (8.x)\n* `Recharge Auction` (9.x)\n* `Savings Vault` (10.x)\n* `Governance` (11.x)\n\nEach upcoming tour will unpack one component’s state, logic, and security patterns.",
+      "title": "",
+      "id": "42542"
+    }
+  ]
+}

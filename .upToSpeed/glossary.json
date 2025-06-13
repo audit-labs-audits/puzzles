@@ -1,0 +1,333 @@
+[
+  {
+    "terms": [
+      "Liquidity Provider"
+    ],
+    "definition": "# Liquidity Provider\n\nIn DeFi protocols like Circuit, a liquidity provider is a participant who contributes assets to facilitate market operations. In Circuit's CDP system, users act as liquidity providers by depositing XCH collateral into vaults to borrow BYC stablecoins. Unlike traditional AMM liquidity providers who earn trading fees, Circuit's providers earn through different mechanisms. Vault owners provide system liquidity, auction participants supply liquidity during liquidations by purchasing discounted collateral, and stability fees collected in the treasury maintain protocol-wide liquidity reserves. These mechanisms collectively ensure sufficient assets are available for borrowing, liquidations, and overall protocol stability."
+  },
+  {
+    "terms": [
+      "Volatility"
+    ],
+    "definition": "# Volatility\n\nVolatility refers to the degree and frequency of price fluctuations in assets like XCH (Chia's native token) that serve as collateral within the Circuit protocol. In this system, high volatility directly impacts the stability of collateralized debt positions (CDPs) used to mint the BYC stablecoin.\n\nThe protocol manages volatility through several mechanisms:\n\n1. **Liquidation parameters** - When collateral value drops below certain thresholds (`STATUTE_VAULT_LIQUIDATION_RATIO_PCT`), liquidation auctions are triggered to protect the system.\n\n2. **Price oracles** - The protocol uses oracle-based price feeds with parameters like `STATUTE_ORACLE_PRICE_UPDATE_DELAY` and `STATUTE_ORACLE_PRICE_UPDATE_DELTA_BPS` to monitor market conditions.\n\n3. **Auction mechanics** - During high volatility, the protocol's auction systems (`STATUTE_VAULT_AUCTION_PRICE_DECREASE_BPS`, `STATUTE_VAULT_AUCTION_TTL`) provide orderly liquidation of undercollateralized positions.\n\n4. **Stability fees** - The protocol charges stability fees (`STATUTE_STABILITY_FEE_DF`, `STATUTE_CUMULATIVE_STABILITY_FEE_DF`) that can be adjusted to account for market volatility risks.\n\nThese mechanisms collectively ensure that the BYC stablecoin remains stable despite the inherent volatility of its underlying collateral assets."
+  },
+  {
+    "terms": [
+      "Arbitrage"
+    ],
+    "definition": "# Arbitrage\n\nIn the context of blockchain protocols like Circuit, arbitrage refers to the strategy of profiting from price differences between different markets or components within the ecosystem. In Circuit's architecture, arbitrage opportunities can arise during auctions (such as surplus auctions and recharge auctions), liquidation events, or when price discrepancies exist between external markets and internal protocol prices.\n\nArbitrageurs contribute to the protocol's efficiency by:\n\n1. Participating in liquidation auctions to purchase discounted collateral\n2. Taking advantage of price differences between oracles and external markets\n3. Balancing treasury rebalance operations when inefficiencies exist\n4. Participating in surplus auctions to obtain protocol tokens at favorable rates\n\nBy identifying and exploiting these price inefficiencies, arbitrageurs help the protocol maintain price equilibrium and enhance overall market efficiency, while generating risk-free profits for themselves."
+  },
+  {
+    "terms": [
+      "Slippage"
+    ],
+    "definition": "# Slippage\n\nIn the Circuit protocol, slippage refers to the difference between the expected price of a transaction and the actual execution price when trading the Bytecash (BYC) stablecoin or participating in liquidation auctions. The protocol implements several mechanisms to handle slippage, including time-bounded transactions, price decrease factors for auctions, and minimum thresholds for bids. These protections prevent exploitation during price fluctuations and ensure fair execution of trades despite blockchain confirmation delays. Slippage management is particularly important during liquidation events, where the protocol uses parameters like `step_price_decrease_factor`, `step_time_interval`, and `minimum_bid_amount` to create a predictable auction environment while accounting for market volatility."
+  },
+  {
+    "terms": [
+      "Spread"
+    ],
+    "definition": "# Spread\n\nIn Circuit's protocol architecture, \"Spread\" refers to the distribution of large trading orders over time, implemented through mechanisms similar to Time-Weighted Average Market Makers (TWAMM). When executing substantial trades, particularly during liquidation auctions or treasury rebalancing, the protocol uses parameters like `STATUTE_TREASURY_REBALANCE_DELTA_PCT` and `STATUTE_VAULT_AUCTION_PRICE_DECREASE_BPS` to gradually execute orders rather than processing them immediately.\n\nThis approach helps protect market stability by reducing price impact and slippage. For instance, when the treasury needs rebalancing, the protocol uses `STATUTE_TREASURY_MINIMUM_DELTA` and related parameters to ensure changes happen incrementally over time rather than in a single large transaction that could disrupt market equilibrium. Similarly, during vault liquidations, the auction price decreases gradually (controlled by `STATUTE_VAULT_AUCTION_PRICE_DECREASE_BPS`), creating a spread effect over the auction's time-to-live period.\n\nBy spreading execution across multiple blocks, Circuit maintains more consistent pricing and liquidity for its BYC stablecoin ecosystem."
+  },
+  {
+    "terms": [
+      "Order Book"
+    ],
+    "definition": "# Order Book\n\nIn decentralized finance, an Order Book is a hybrid trading mechanism that combines elements of Automated Market Makers (AMMs) with traditional Central Limit Order Books (CLOBs). Within the Circuit protocol, the Order Book system facilitates efficient price discovery and asset exchange through on-chain auctions and bidding mechanisms.\n\nThe implementation includes sophisticated components for:\n\n1. **Auction Management** - Handling both liquidation auctions with decreasing prices and surplus auctions with competitive bidding\n2. **Price Discovery** - Using oracle systems with validation mechanisms that can process and sort price data\n3. **Bid Processing** - Managing parameters like minimum bid amounts, time limits, and required bid increases\n4. **Treasury Integration** - Coordinating token flows between trading activity and protocol reserves\n\nThis system enables advanced trading features such as on-chain limit orders, dynamic fee adjustments based on market conditions, and custom oracle implementations while maintaining the protocol's decentralized nature."
+  },
+  {
+    "terms": [
+      "Market Depth"
+    ],
+    "definition": "# Market Depth\n\nMarket depth in decentralized exchanges refers to the volume and distribution of buy and sell orders at different price levels in a liquidity pool. It represents the market's ability to absorb large trades without causing significant price slippage.\n\nIn the Circuit protocol, market depth is particularly relevant to:\n\n1. **Auction Mechanisms** - The protocol uses auction systems with parameters like `STATUTE_VAULT_AUCTION_MINIMUM_BID` and `STATUTE_MINIMUM_BID_INCREASE_BPS` that ensure orderly price discovery based on available liquidity.\n\n2. **Price Stability** - Functions like `above-threshold` in oracle.clib evaluate price movements against thresholds, which are affected by market depth.\n\n3. **Oracle Implementation** - The `mergesort` function and median calculations in oracle.clib suggest price consensus mechanisms that account for liquidity conditions.\n\nDeep markets with substantial liquidity across multiple price levels provide better price stability and lower slippage for trades. When market depth is low, even moderate-sized transactions can cause significant price movements, increasing volatility and trading costs.\n\nThe Circuit protocol's treasury and auction mechanics are designed to function within this context, maintaining price stability for the Bytecash (BYC) stablecoin through carefully calibrated market operations."
+  },
+  {
+    "terms": [
+      "Limit Order"
+    ],
+    "definition": "# Limit Order\n\nA limit order in the Circuit protocol is a type of order where users can specify a target price at which they're willing to buy or sell assets. Unlike traditional exchanges, Circuit implements limit orders through auction mechanisms rather than an order book.\n\nWhen a user places a limit order, they're essentially participating in an auction by bidding with BYC (Bytecash) tokens to acquire collateral (typically XCH) when vaults become undercollateralized. The `vault_keeper_bid.clsp` handles this logic, allowing users to specify parameters like bid amount and target prices.\n\nKey aspects of limit orders in Circuit:\n\n1. **Price Specification**: Users set a specific price threshold at which their order should execute.\n2. **Automated Execution**: Orders execute automatically when market conditions meet the specified criteria.\n3. **Auction-Based**: Orders are fulfilled through an auction system rather than direct peer-to-peer matching.\n4. **Fee Earning**: Users may earn fees while their orders are pending execution, similar to providing liquidity.\n\nLimit orders provide an essential tool for traders to execute trades at desired price points without having to actively monitor the market."
+  },
+  {
+    "terms": [
+      "Stop-Loss Order"
+    ],
+    "definition": "# Stop-Loss Order\n\nA Stop-Loss Order in the Circuit protocol is an automated risk management mechanism that helps users limit potential losses on their collateralized positions. It functions by setting predefined price thresholds or collateralization ratios that, when breached, trigger an automatic liquidation process.\n\nThe implementation leverages Circuit's oracle system to monitor asset prices and the `above-threshold()` function to detect when price movements exceed specified limits. When triggered, the protocol automatically executes the order through its vault keeper system, which handles the liquidation process by selling collateral to repay debt according to parameters defined in the Statutes system (such as `STATUTE_VAULT_LIQUIDATION_RATIO_PCT`).\n\nUnlike traditional stop-loss orders that require centralized order matching, Circuit's implementation executes entirely on-chain through its puzzle system, ensuring that positions are liquidated in a trustless, transparent manner when market conditions meet the predefined criteria, thus protecting users from severe downside risk during market volatility."
+  },
+  {
+    "terms": [
+      "Maker Fee"
+    ],
+    "definition": "# Maker Fee\n\nIn the Circuit protocol, a \"Maker Fee\" is a form of stability fee that is charged to users who borrow assets from the protocol. The code implements a sophisticated fee structure where these stability fees accrue over time on borrowed principal amounts.\n\nUnlike traditional exchanges where maker fees reward liquidity providers with lower rates, Circuit's implementation focuses on:\n\n1. **Stability Fee Accrual**: Fees accumulate based on a cumulative discount factor that tracks interest over time:\n   ```clojure\n   undiscounted_principal (undiscount-principal DISCOUNTED_PRINCIPAL cumulative_stability_fee_df)\n   accrued_sf (calculate-total-fees undiscounted_principal PRINCIPAL 0)\n   ```\n\n2. **Treasury Transfers**: Accrued stability fees are transferred to a protocol treasury to maintain protocol sustainability:\n   ```clojure\n   fees_to_treasury (calculate-total-fees undiscounted_principal PRINCIPAL 0)\n   new_treasury_amount (+ fees_to_treasury treasury_amount)\n   ```\n\n3. **Minimum Thresholds**: To prevent economic attacks through \"dusting,\" the protocol enforces minimum fee amounts:\n   ```clojure\n   (> fees_to_treasury min_treasury_delta)\n   ```\n\nThe fee mechanism is designed to ensure protocol sustainability while preventing economic attacks, with checks to ensure fees don't exceed accrued amounts and that they meet minimum thresholds before being transferred to the treasury."
+  },
+  {
+    "terms": [
+      "Taker Fee"
+    ],
+    "definition": "# Taker Fee\n\nIn the Circuit protocol, a Taker Fee is a portion of accrued stability fees that is deducted from transactions and transferred to the protocol's treasury. Unlike traditional exchange taker fees that penalize liquidity removal, Circuit's implementation represents fees collected from vault operations such as loan repayments. The system enforces a minimum threshold (`min_treasury_delta`) for these transfers to prevent dust attacks, and these fees help ensure protocol sustainability by accumulating value in the treasury. Taker fees are calculated based on the difference between undiscounted principal and principal amounts using cumulative discount factors that account for the time-based accrual of stability fees."
+  },
+  {
+    "terms": [
+      "Margin Trading"
+    ],
+    "definition": "# Margin Trading\n\nMargin trading in DeFi protocols like Circuit allows users to leverage their positions by borrowing assets against collateral. In the Circuit protocol, users can deposit XCH as collateral into vaults and mint BYC (Bytecash) stablecoins against it, effectively creating leveraged positions.\n\nThe protocol uses key mechanisms to manage risk:\n\n1. **Collateralization Ratio**: Determines how much BYC can be minted against deposited XCH\n2. **Liquidation Threshold**: If the value of collateral falls below a certain ratio to debt, the position becomes eligible for liquidation\n3. **Stability Fees**: Interest charged on borrowed funds, similar to margin fees in traditional finance\n4. **Liquidation Auctions**: Process for selling undercollateralized positions\n\nWhen a user's position becomes undercollateralized due to price fluctuations, keepers can trigger liquidation through functions like `vault_keeper_bid.clsp`, auctioning the collateral to repay outstanding debt plus fees.\n\nUnlike traditional margin trading where exchanges directly lend assets, DeFi margin trading operates through smart contracts that maintain overcollateralization and automatically enforce liquidations when necessary, reducing counterparty risk while still providing leverage opportunities."
+  },
+  {
+    "terms": [
+      "Leverage"
+    ],
+    "definition": "# Leverage\n\nIn the Circuit protocol, leverage refers to a multi-faceted mechanism that optimizes the creation and management of the Bytecash (BYC) stablecoin. It encompasses several key components:\n\n1. **Collateral Leverage** - The system allows users to lock XCH as collateral and mint BYC against it, with borrowing limits calculated based on collateral value, current XCH price, and liquidation ratios.\n\n2. **Financial Leverage** - Through carefully designed stability fees and liquidation penalties, the protocol maintains appropriate risk-reward balances for all participants.\n\n3. **Time-Value Leverage** - The protocol uses discount factors and time-based calculations to properly account for the time value of loans and fees.\n\n4. **Liquidation Leverage** - An auction-based liquidation system with time-decreasing prices ensures efficient recovery of undercollateralized positions while incentivizing liquidators.\n\n5. **Governance Leverage** - The statute system provides flexible protocol parameters that can adapt to market conditions without code changes.\n\nTogether, these leverage mechanisms create a comprehensive system that enables Circuit to securely issue BYC while maintaining appropriate collateralization and managing risk across market conditions."
+  },
+  {
+    "terms": [
+      "Hedging"
+    ],
+    "definition": "# Hedging\n\nHedging in decentralized finance protocols like Circuit represents strategic risk management mechanisms designed to protect protocol participants against adverse price movements and market volatility.\n\nIn Circuit's context, hedging manifests through several key mechanisms:\n\n1. **Collateralization Management** - The vault system maintains appropriate collateral-to-debt ratios through functions like `available-to-mint` and `get-min-collateral-amount`, establishing buffers against price volatility.\n\n2. **Liquidation Auctions** - When positions become undercollateralized, the protocol employs auction mechanisms with parameters like `step_price_decrease_factor` and customizable timeframes (`auction_ttl`) to optimize collateral liquidation and minimize losses.\n\n3. **Fee Structures** - The protocol implements stability fees and liquidation penalties that create economic incentives for responsible position management while providing reserves against systemic risks.\n\n4. **Oracle Price Validation** - The `above-threshold` function and parameters like `STATUTE_ORACLE_PRICE_UPDATE_DELTA_BPS` protect against oracle manipulation, ensuring reliable price data for risk calculations.\n\n5. **Treasury Rebalancing** - Dynamic treasury management with configurable thresholds (`STATUTE_TREASURY_MINIMUM`, `STATUTE_TREASURY_MAXIMUM`) ensures protocol-wide solvency during market stress.\n\nThese integrated hedging mechanisms work together to maintain system stability, protect individual positions, and ensure the protocol can withstand market fluctuations while maintaining the peg of the BYC stablecoin."
+  },
+  {
+    "terms": [
+      "Swap"
+    ],
+    "definition": "# Swap\n\nA core operation in the Circuit protocol that enables exchange of one token for another. In Circuit's implementation, swaps leverage Chia blockchain's puzzle system to create atomic and secure token exchanges. The swap process verifies token ownership, calculates exchange rates using oracle price data, and ensures transaction integrity through multiple validation steps.\n\nUnlike traditional order book exchanges, Circuit swaps execute against pooled liquidity. The implementation includes safety mechanisms to protect users from price manipulation and failed transactions, with code that has undergone multiple security audits. Swap operations work in conjunction with Treasury and Vault components to facilitate the complete movement of tokens between different parts of the system."
+  },
+  {
+    "terms": [
+      "Futures"
+    ],
+    "definition": "# Futures\n\nIn decentralized finance protocols like Circuit, futures are financial contracts where parties agree to buy or sell assets at predetermined prices at a specific time in the future. \n\nWhile the Circuit protocol doesn't explicitly implement futures at the core level, its architecture creates a foundation that could support futures-like mechanisms through:\n\n1. **Oracle Price System** - The protocol maintains price feeds and timestamps (as seen in `oracle.clib`) that could be used to settle contracts based on future price movements.\n\n2. **Auction Mechanisms** - Circuit implements sophisticated auction systems (e.g., `surplus_start_auction.clsp`) that could be adapted for futures settlement.\n\n3. **Time-Based Conditions** - The protocol uses time-locked conditions (`ASSERT_SECONDS_ABSOLUTE`, `ASSERT_BEFORE_SECONDS_ABSOLUTE`) that are essential for creating future-dated contracts.\n\nUnlike traditional futures which often require centralized clearinghouses, DeFi protocols like Circuit would implement futures through smart contracts that automatically execute when conditions are met, using collateral to ensure settlement."
+  },
+  {
+    "terms": [
+      "Options"
+    ],
+    "definition": "# Options\n\nIn the Circuit protocol, \"Options\" are not a specific feature or component, but rather refer to the configurable parameters and settings that govern the protocol's behavior. These parameters are formalized in the protocol as \"Statutes\" - a set of rules and values that control everything from interest rates to liquidation rules.\n\nThe statutes system, defined in `statutes_utils.clib`, contains numerous constants like:\n\n```chialisp\n(defconst STATUTE_STABILITY_FEE_DF 1)\n(defconst STATUTE_INTEREST_DF 2)\n(defconst STATUTE_VAULT_LIQUIDATION_RATIO_PCT 8)\n(defconst STATUTE_VAULT_MINIMUM_DEBT 9)\n```\n\nThese statutes allow the protocol to be configurable and upgradable through governance mechanisms. The protocol also includes utilities for asserting and modifying these parameters:\n\n```chialisp\n(defun-inline assert-statute (statutes_puzzle_hash statute_index statute_value)\n  (list ASSERT_PUZZLE_ANNOUNCEMENT\n    (sha256\n      statutes_puzzle_hash\n      PROTOCOL_PREFIX\n      (sha256tree (c STATUTE_PREFIX (c statute_index statute_value)))\n    )\n  )\n)\n```\n\nThe Circuit protocol's options system provides flexibility and adaptability to market conditions while maintaining protocol security through its governance layer."
+  },
+  {
+    "terms": [
+      "Derivatives"
+    ],
+    "definition": "# Derivatives\n\nIn the context of the Circuit protocol on Chia blockchain, derivatives refer to financial instruments whose value is derived from the underlying XCH collateral and BYC stablecoin. While not explicitly named as derivatives, the protocol implements several derivative-like mechanisms:\n\n1. **Collateralized Debt Positions (CDPs)** - Users lock XCH as collateral to mint BYC stablecoins, creating a synthetic position derived from XCH's value.\n\n2. **Discount Factors** - The protocol uses sophisticated discount factor calculations to handle time-value of money, allowing for interest accrual on debt positions (`calculate-cumulative-discount-factor` in utils.clib).\n\n3. **Liquidation Auctions** - When vaults become under-collateralized, an auction system liquidates the position, functioning similar to options contracts with forced execution.\n\n4. **Price Oracles** - External price feeds determine the value of positions, with validation mechanisms to ensure proper derivative pricing.\n\n5. **Stability Fees** - Time-based fees that accrue on borrowed amounts, representing the premium paid for the derivative position.\n\nThese mechanisms collectively form a complex on-chain derivatives system that enables leveraged positions, risk management, and financial engineering within the constraints of Chia's smart contract platform."
+  },
+  {
+    "terms": [
+      "Stablecoin"
+    ],
+    "definition": "# Stablecoin\n\nA cryptocurrency designed to maintain a stable value relative to a specific asset (typically the US dollar). In the Circuit protocol, Bytecash (BYC) is the stablecoin implementation that maintains stability through a collateralized debt position (CDP) mechanism. Users can mint BYC by depositing XCH (Chia's native token) as collateral in vaults, subject to minimum collateralization ratios. The system ensures stability through:\n\n1. **Collateralization** - Each BYC is backed by XCH worth more than the stablecoin's value\n2. **Stability Fees** - Interest-like fees that accrue on borrowed BYC\n3. **Liquidation Mechanism** - Automatic liquidation of undercollateralized vaults\n4. **Treasury Management** - A BYC reserve that collects fees and handles bad debt\n\nThe protocol uses oracles to track XCH price, calculates appropriate collateralization ratios, and enables lending, repayment, and liquidation operations through Chialisp smart contracts. Stablecoins like BYC provide a reliable store of value and medium of exchange within blockchain ecosystems, facilitating trading and reducing volatility risk."
+  },
+  {
+    "terms": [
+      "Collateral"
+    ],
+    "definition": "# Collateral\n\nIn the Circuit protocol, collateral refers to the XCH (Chia's native cryptocurrency) that users lock in vaults to borrow Bytecash (BYC) stablecoins. This collateral serves as security for the borrowed funds, with the protocol requiring users to maintain more value in XCH than the value of BYC borrowed (overcollateralization). The system continuously monitors the collateral-to-debt ratio using price oracles, and if this ratio falls below the liquidation threshold, the vault becomes eligible for liquidation through an auction process where keepers can bid BYC to acquire the discounted collateral. Users can manage their positions by depositing additional collateral, withdrawing excess collateral (if sufficiently collateralized), or repaying debt to reclaim their locked assets. This collateral mechanism is foundational to maintaining the stability and trust in the Bytecash stablecoin system by ensuring all issued BYC is backed by sufficient value."
+  },
+  {
+    "terms": [
+      "Yield Farming"
+    ],
+    "definition": "# Yield Farming\n\nIn the context of the Circuit protocol on Chia blockchain, yield farming refers to strategies where users can earn rewards by participating in the protocol's ecosystem. Unlike traditional DeFi yield farming that focuses on liquidity provision, Circuit's yield farming mechanisms center around the stability of their BYC stablecoin system.\n\nUsers can earn yields through several mechanisms:\n\n1. **Stability Fee Collection**: When users repay borrowed BYC tokens, a portion of the accrued stability fees are transferred to the treasury. Protocol participants may earn rewards from this treasury.\n\n2. **Liquidation Incentives**: The protocol rewards users who initiate liquidations of under-collateralized vaults with both flat and percentage-based incentives, calculated from the outstanding debt.\n\n3. **Auction Participation**: Users can bid in liquidation auctions to acquire discounted collateral, with the auction price decreasing over time according to configured parameters.\n\n4. **Treasury Rebalancing**: The protocol maintains a treasury with minimum and maximum thresholds, potentially offering yield opportunities for users who help maintain these balances.\n\nUnlike traditional farming with regular reward emissions, Circuit's yield generation is tied to system health and stability, rewarding those who help maintain proper collateralization and system solvency."
+  },
+  {
+    "terms": [
+      "Staking"
+    ],
+    "definition": "# Staking\n\nIn the Circuit protocol on Chia's blockchain, staking refers to the process where users deposit funds into announcer contracts to participate in governance and earn rewards. Unlike traditional proof-of-stake systems, Circuit's staking mechanism doesn't secure the network consensus but instead serves protocol governance functions.\n\nUsers deposit a minimum required amount (MIN_DEPOSIT) into announcer contracts, which are time-locked with a specified DELAY period. These staked funds enable participants to announce values (like price data) to the protocol and earn CRT token rewards according to a claim interval system. The amount staked also serves as security against malicious behavior, with potential penalties applied through a discount factor mechanism if announcements are disapproved through governance votes.\n\nThis system creates economic alignment between announcers and the protocol's health, while the registry-based reward distribution ensures fair compensation proportional to staking participation."
+  },
+  {
+    "terms": [
+      "APR (Annual Percentage Rate)",
+      "APR",
+      "Annual Percentage Rate"
+    ],
+    "definition": "# APR (Annual Percentage Rate)\n\nIn the Circuit protocol, APR represents the annualized rate at which interest accrues on borrowed assets or staked tokens. The protocol implements this concept through discount factors and time-based calculations rather than directly using percentage values. Key functions like `calculate-interest` and `undiscount-principal` apply these rates to determine interest payments for savings vaults or stability fees for borrowers. \n\nWhile not explicitly storing APR as a percentage (e.g., \"5% APR\"), the system uses cumulative discount factors (`cumulative_stability_fee_df`, `current_interest_df`) that mathematically represent the effects of an annual percentage rate compounded over specific time periods. This approach allows for precise on-chain financial calculations while maintaining the familiar concept of annualized returns that users expect when evaluating potential earnings or costs in the protocol."
+  },
+  {
+    "terms": [
+      "APY (Annual Percentage Yield)",
+      "APY",
+      "Annual Percentage Yield"
+    ],
+    "definition": "# APY (Annual Percentage Yield)\n\nAnnual Percentage Yield in the Circuit protocol represents the effective annual rate of return earned by depositing assets (typically BYC stablecoins) into savings vaults, with compounding effects included. The protocol calculates APY using a sophisticated discounting mechanism where:\n\n1. User deposits are tracked as a \"discounted balance\" that grows in value over time based on interest rates\n2. Interest accrual is calculated through cumulative discount factors that adjust based on time elapsed\n3. The actual yield is derived from the difference between the current value of the discounted balance and the original principal\n\nUnlike simple interest rates, APY accounts for compounding, making it a more accurate representation of actual returns. In Circuit's implementation, interest payments come from the treasury coin and are distributed proportionally to depositors based on their contribution to the pool. The core calculation is implemented in the `calculate-interest` function, which determines the difference between the current value of a discounted balance and the original principal amount.\n\nAPY serves as both a transparent metric for users to understand potential returns and a key economic mechanism for balancing incentives within the broader Circuit ecosystem."
+  },
+  {
+    "terms": [
+      "Gas Fee"
+    ],
+    "definition": "# Gas Fee\n\nGas fees in blockchain systems are transaction costs paid by users to execute operations on the network. In the Circuit protocol, these manifest primarily as stability fees that accrue on borrowed stablecoins and must be paid when repaying loans. The protocol implements sophisticated fee calculation mechanisms using discount factors that adjust based on time and transaction size.\n\nThe code includes minimum fee thresholds to prevent dust attacks and inefficient transactions:\n\n```clsp\n(assert\n  ; to avoid keepers dusting and hogging treasury coins\n  (> fees_to_treasury min_treasury_delta)\n)\n```\n\nFees collected by the protocol are transferred to a treasury system:\n\n```clsp\nnew_treasury_amount (+ fees_to_treasury treasury_amount)\n```\n\nThe fee parameters can be adjusted through governance proposals, with the protocol itself charging a proposal fee to prevent spam. This comprehensive fee system serves the same core purposes as gas fees on other networks: compensating validators, preventing network abuse, and ensuring efficient resource allocation."
+  },
+  {
+    "terms": [
+      "Smart Contract"
+    ],
+    "definition": "# Smart Contract\n\nA smart contract is a self-executing program stored on a blockchain that automatically enforces the terms of an agreement between parties without requiring intermediaries. In the Circuit protocol context, smart contracts take the form of \"puzzles\" written in Chialisp (Chia's native programming language) that control how digital assets can be created, spent, and interact with other assets.\n\nThese puzzles implement immutable rules that govern financial operations like creating stablecoins, managing collateralized debt positions, conducting auctions, and enforcing governance decisions. For example, in Circuit's codebase, the `announcer_announce.clsp` puzzle creates announcements when triggered, while `surplus_start_auction.clsp` manages auction processes with specific parameters like bid timeouts and minimum bid increases.\n\nUnlike traditional contracts requiring human interpretation, smart contracts execute their embedded logic automatically when predefined conditions are met, ensuring transparency and eliminating trust requirements. Their code is visible to all participants, and once deployed on the blockchain, they operate according to their programming without the possibility of tampering or censorship."
+  },
+  {
+    "terms": [
+      "DeFi"
+    ],
+    "definition": "# DeFi\n\nDecentralized Finance (DeFi) refers to financial applications built on blockchain technology that operate without traditional intermediaries like banks or brokers. In the Circuit protocol context, DeFi manifests as a system where users can lock XCH (Chia's native token) as collateral to borrow Bytecash (BYC), a stablecoin.\n\nKey DeFi elements in Circuit include:\n\n1. **Non-custodial operation** - Users maintain control of their assets through smart contracts rather than trusting a centralized entity\n2. **Transparent execution** - Financial operations like borrowing, repayment, and liquidation are governed by open-source code in Chialisp\n3. **Programmable finance** - Parameters like stability fees, liquidation ratios, and auction mechanics are managed through a \"statutes\" system\n4. **Automated market operations** - Keeper-initiated liquidations trigger auctions when collateralization ratios drop below thresholds\n\nCircuit demonstrates how DeFi principles enable permissionless lending protocols that operate through algorithmic rules rather than human intermediaries, creating more accessible and transparent financial services."
+  },
+  {
+    "terms": [
+      "CeFi"
+    ],
+    "definition": "# CeFi\n\nCentralized Finance (CeFi) refers to financial services managed by centralized intermediaries that handle cryptocurrency assets. Unlike DeFi (Decentralized Finance) protocols like Circuit DAO that operate through smart contracts with no central authority, CeFi platforms provide custodial services where users surrender control of their assets to a trusted third party. CeFi institutions typically offer user-friendly interfaces, fiat on/off ramps, and regulatory compliance, but introduce counterparty risk and require KYC verification. Examples include cryptocurrency exchanges like Coinbase, lending platforms like BlockFi, and stablecoin issuers with centralized reserves. CeFi represents the traditional financial model applied to cryptocurrency markets, contrasting with trustless, permissionless DeFi systems like the Circuit protocol that operate through immutable smart contracts on blockchain networks."
+  },
+  {
+    "terms": [
+      "DAO"
+    ],
+    "definition": "# DAO\n\nA Decentralized Autonomous Organization (DAO) is a blockchain-based governance structure where decisions are made collectively by token holders rather than by a central authority. In the Circuit protocol, the DAO operates through on-chain voting mechanisms where CRT token holders propose, debate, and approve protocol changes, including parameter adjustments and treasury management.\n\nThe CircuitDAO implementation includes several core components:\n- **Statutes**: On-chain rules and parameters defined in `statutes.clsp` that govern protocol operation\n- **Approval mechanisms**: Multi-signature style validation of actions via approval modules\n- **Treasury management**: Controlled spending of protocol resources through `treasury.clsp`\n- **Governance tokens**: CRT holders who collectively form the decision-making body\n\nThis governance model enables the protocol to function without relying on a legal entity, as all decisions and changes are executed entirely on-chain through transparent voting processes, making the protocol truly decentralized."
+  },
+  {
+    "terms": [
+      "Liquidity Mining"
+    ],
+    "definition": "# Liquidity Mining\n\nLiquidity Mining in the Circuit protocol is a mechanism where network participants called \"announcers\" provide services to the protocol and receive CRT governance tokens as rewards. The system maintains a registry of eligible participants and distributes rewards proportionally based on participation at regular intervals defined by `STATUTE_ANNOUNCER_CREDITS_INTERVAL`. Rewards are calculated using `STATUTE_ANNOUNCER_CREDITS_PER_INTERVAL` and divided evenly among all active announcers. Participants must meet minimum deposit requirements (`STATUTE_ANNOUNCER_MINIMUM_DEPOSIT`) to qualify. This incentive structure helps maintain protocol stability by encouraging ongoing participation in essential services that support the Bytecash (BYC) stablecoin ecosystem. The maximum amount of CRT that can be minted for rewards is capped to prevent inflation."
+  },
+  {
+    "terms": [
+      "Protocol Fee"
+    ],
+    "definition": "# Protocol Fee\n\nIn the Circuit protocol, a Protocol Fee refers to a percentage of transaction fees collected by the protocol through its stability fee mechanism. When users borrow the Bytecash (BYC) stablecoin, their debt accrues stability fees over time, calculated as the difference between the undiscounted principal and the original principal amount. These fees are transferred to the protocol's treasury and serve as revenue for protocol development, maintenance, and risk management.\n\nThe protocol implements safeguards against \"dusting\" by requiring a minimum threshold (`STATUTE_TREASURY_MINIMUM_DELTA`) for fee transfers. Key parameters governing the fee structure, such as the stability fee discount factor (`STATUTE_STABILITY_FEE_DF`), can be adjusted through the protocol's governance mechanism, allowing the community to vote on changes to the fee rates.\n\nThe treasury's balance is maintained within acceptable ranges defined by `STATUTE_TREASURY_MINIMUM` and `STATUTE_TREASURY_MAXIMUM` parameters, ensuring both sustainability of protocol revenue and reasonable fee levels for users."
+  },
+  {
+    "terms": [
+      "ERC20"
+    ],
+    "definition": "# ERC20\n\nERC20 is a technical standard for implementing fungible tokens on the Ethereum blockchain. Created in 2015, it defines a common interface that tokens must implement, including functions like `transfer`, `approve`, `transferFrom`, `balanceOf`, and `allowance`, along with events like `Transfer` and `Approval`. This standardization enables tokens to be easily integrated with wallets, exchanges, and other smart contracts in a predictable way. ERC20 tokens share identical properties, meaning each token is exactly the same as every other token of its type—making them ideal for use as currency, voting rights, or staking mechanisms. The standard has become the foundation for thousands of tokens and decentralized finance (DeFi) applications, though it has limitations such as the \"approve/transferFrom\" pattern that can lead to double-spend vulnerabilities if not carefully implemented."
+  },
+  {
+    "terms": [
+      "ERC1155"
+    ],
+    "definition": "# ERC1155\n\nA token standard on Ethereum that allows for the creation and management of multiple token types within a single smart contract. It supports both fungible and non-fungible tokens, enables batch transfers, and provides more gas-efficient operations compared to separate ERC20 or ERC721 contracts. ERC1155 is used in various blockchain applications for its flexibility and efficiency in managing multiple token types."
+  },
+  {
+    "terms": [
+      "ERC6909"
+    ],
+    "definition": "# ERC6909\n\nERC6909 is a gas-efficient Ethereum token standard for managing multiple fungible tokens within a single smart contract. Unlike ERC20 which requires deploying separate contracts for each token, ERC6909 allows tracking multiple token IDs in one contract. It provides essential functionality for token transfers, approvals, and balance management while optimizing for gas efficiency.\n\nKey features include:\n- Multiple token types within one contract\n- Operator approval system for managing transfers on behalf of others\n- Batch transfer capabilities\n- Event standardization for transfers and approvals\n- Gas-optimized storage patterns\n\nThis standard is particularly useful for applications requiring multiple related tokens (like gaming assets, stablecoin families, or DeFi protocols) where deploying individual ERC20 contracts would be inefficient and costly."
+  },
+  {
+    "terms": [
+      "X96"
+    ],
+    "definition": "# X96\n\nA fixed-point number format used in decentralized finance protocols (particularly Uniswap V3) where decimal numbers are represented by multiplying by 2^96 and storing as integers. This format provides 96 bits of precision after the decimal point, enabling highly accurate calculations for token prices and exchange rates while avoiding floating-point arithmetic. \n\nWhen you see variables like `sqrtPriceX96`, it means the square root of a price ratio is represented in this format. X96 enables efficient mathematical operations in blockchain environments where precision is critical but computational resources are expensive. Converting between regular decimal numbers and X96 format involves multiplication or division by 2^96, allowing smart contracts to perform complex calculations with consistent results."
+  },
+  {
+    "terms": [
+      "Concentrated Liquidity"
+    ],
+    "definition": "# Concentrated Liquidity\n\nConcentrated liquidity is a capital efficiency mechanism that allows liquidity providers to allocate their assets within specific price ranges rather than distributing them uniformly across the entire price spectrum. Unlike traditional AMM designs where liquidity is spread thinly from zero to infinity, concentrated liquidity enables providers to focus their capital where it's most likely to be utilized - typically around the current market price.\n\nIn protocols implementing concentrated liquidity, liquidity providers create positions with defined upper and lower price bounds. When the market price operates within this range, the position actively participates in trades and earns fees. If the price moves outside the specified range, the position becomes inactive until prices return to the defined band.\n\nThis targeted approach significantly improves capital efficiency, potentially generating higher returns for liquidity providers while offering traders better pricing and reduced slippage, especially in stable or range-bound markets. The concept was pioneered by Uniswap V3 and has since become a fundamental design pattern in advanced decentralized exchanges and DeFi protocols."
+  },
+  {
+    "terms": [
+      "Constant Product Formula"
+    ],
+    "definition": "# Constant Product Formula\n\nThe Constant Product Formula (x * y = k) is a mathematical mechanism used in automated market makers (AMMs) like those in the Circuit protocol. It establishes that the product of two token reserves must remain constant during trades. In Circuit's implementation, this formula governs the relationship between collateral and debt in vaults, treasury rebalancing, and liquidity pools. Functions like `get-min-collateral-amount` use this principle to calculate minimum collateral requirements, while price adjustments follow the formula's implications where the ratio of reserves determines exchange rates. As users trade assets, the formula ensures that as one token's quantity decreases, the other increases proportionally, creating an automatic pricing mechanism that maintains constant liquidity while allowing for permissionless trading."
+  },
+  {
+    "terms": [
+      "Invariant"
+    ],
+    "definition": "# Invariant\n\nIn the Circuit protocol, an invariant refers to a mathematical property or relationship that must remain unchanged throughout the system's operation, ensuring its integrity and stability. The most significant invariant in the codebase is the balance conservation principle seen in the CAT (Controllable Asset Type) implementation, where the sum of inputs must always equal the sum of outputs: `sum(i, 1, n) O_i = sum(i, 1, n) A_i`. The protocol enforces this and other invariants through a sophisticated system of debt tracking, subtotal calculations, and cryptographic verification using announcements and assertions. These invariants prevent unauthorized token creation or destruction, maintain the stability of the BYC stablecoin, and ensure that all transactions follow predefined rules. Other key invariants include positive balances, transaction consistency, and proper authorization for token issuance and melting operations."
+  },
+  {
+    "terms": [
+      "Mid Price"
+    ],
+    "definition": "# Mid Price\n\nIn decentralized exchanges and specifically in the Circuit protocol, the Mid Price refers to the median price value calculated from multiple independent price sources (announcers). This approach is used to establish a manipulation-resistant reference price for assets.\n\nThe Circuit protocol implements this by:\n1. Collecting price data from multiple trusted sources\n2. Sorting these prices using a mergesort algorithm\n3. Selecting the median value as the authoritative \"mid price\"\n4. Applying validation rules to ensure price reliability\n\nThis median-based approach provides greater security than using a mean (average) price, as it's more resistant to outliers and potential manipulation attempts. The mid price serves as the foundation for critical operations including collateral valuation, liquidation decisions, and maintaining the stability of the BYC stablecoin.\n\nThe protocol also implements safeguards around price updates, including uniqueness verification, update frequency controls, and time-delay mechanisms that prevent prices from taking immediate effect until a specified maturation period has passed."
+  },
+  {
+    "terms": [
+      "AMM Protocol",
+      "Automated Market Maker",
+      "AMM"
+    ],
+    "definition": "# AMM Protocol\n\nAn Automated Market Maker (AMM) protocol is a decentralized exchange mechanism that uses smart contracts to facilitate token swaps without traditional order books. In the Circuit protocol, the AMM functionality combines auction mechanisms with liquidity pools to enable trading between assets like BYC (Bytecash) and CRT tokens.\n\nKey components of Circuit's AMM implementation include:\n\n1. **Liquidity Pools**: Managed through the treasury system, these pools hold paired assets to facilitate swaps.\n\n2. **Auction-Based Price Discovery**: Rather than using constant product formulas, Circuit employs auction mechanisms (surplus and recharge auctions) with configurable parameters like minimum bid increases and auction durations.\n\n3. **Governance Controls**: Parameters affecting AMM behavior are controlled through a statutes system, allowing for protocol adaptability.\n\n4. **Oracle Integration**: Price feeds from oracles inform the pricing mechanisms, providing external market data.\n\n5. **Specialized Token Roles**: Different tokens serve specific functions within the ecosystem, with distinct issuance and melting mechanisms.\n\nThe AMM protocol enables permissionless liquidity provision and trading while maintaining gas efficiency through its smart contract architecture. By eliminating traditional order books and intermediaries, Circuit's AMM creates continuous market liquidity while distributing trading fees to liquidity providers."
+  },
+  {
+    "terms": [
+      "address(0)"
+    ],
+    "definition": "# address(0)\n\nThe zero address, represented as `0x0000000000000000000000000000000000000000`. In Ethereum and EVM-compatible blockchains, `address(0)` serves as a special sentinel value, often used to:\n\n1. Indicate an uninitialized or invalid address\n2. Represent the absence of a valid address in function parameters or return values\n3. Act as a burn address for tokens (sending to this address effectively removes tokens from circulation)\n4. Serve as a default value in smart contract storage\n5. Trigger specific logic in contracts, such as preventing transfers to the zero address\n\nIn Solidity, `address` type variables automatically default to `address(0)` when uninitialized. Best practice dictates checking for the zero address before critical operations:\n\n```solidity\nrequire(recipient != address(0), \"Cannot transfer to zero address\");\n```\n\nThe zero address is special because no one can feasibly possess its private key, making it a one-way destination for assets."
+  },
+  {
+    "terms": [
+      "EIP-1153"
+    ],
+    "definition": "# EIP-1153\n\nEIP-1153 (Transient Storage Opcodes) is an Ethereum Improvement Proposal that introduced new opcodes to the Ethereum Virtual Machine for efficiently handling temporary storage within transactions. The proposal adds two opcodes: TLOAD (0x5c) and TSTORE (0x5d), which allow data to persist during a transaction's execution but are automatically cleared when the transaction completes.\n\nKey benefits of transient storage include:\n- More gas-efficient than regular storage operations (100 gas vs. 5000+ gas for cold storage writes)\n- Ideal for temporary values like reentrancy locks that only need to exist during transaction execution\n- Persists across function calls within a transaction\n- Automatically resets after each transaction without requiring explicit cleanup code\n\nTransient storage was implemented in Ethereum's Cancun upgrade (March 2024) and is supported in Solidity 0.8.24+ through assembly-level access. Common use cases include gas-efficient reentrancy protection, temporary computation state, and reducing storage costs for values that don't need to persist between transactions."
+  },
+  {
+    "terms": [
+      "DEX"
+    ],
+    "definition": "# DEX\n\nA Decentralized Exchange (DEX) is a peer-to-peer marketplace where users can trade cryptocurrencies directly from their wallets without intermediaries. Unlike centralized exchanges, DEXs operate through smart contracts deployed on blockchain networks, allowing traders to maintain custody of their assets throughout the trading process.\n\nMost modern DEXs employ Automated Market Maker (AMM) models, where liquidity is pooled in smart contracts and pricing is determined by mathematical formulas rather than traditional order books. Users can contribute to liquidity pools, earning fees from trades that occur within those pools.\n\nKey features of DEXs include:\n\n- Non-custodial trading (users retain control of private keys)\n- Permissionless participation (no KYC/AML requirements)\n- Transparent, on-chain execution\n- Composability with other DeFi protocols\n- Resistance to censorship and single points of failure\n\nPopular DEX implementations include Uniswap on Ethereum, PancakeSwap on BNB Chain, and Curve Finance for stablecoin swaps."
+  },
+  {
+    "terms": [
+      "ERC721"
+    ],
+    "definition": "# ERC721\n\nERC721 is a standard for non-fungible tokens (NFTs) on the Ethereum blockchain that defines a set of required functions and events for creating, owning, and transferring unique digital assets. Chia's blockchain has developed its own equivalent called \"NFT0\" that offers similar functionality but with enhanced features like multiple content URIs for improved permanence. In the context of the Circuit Puzzles codebase, ERC721 serves as a reference point rather than a direct implementation, as the code focuses on Chia's native token standards and financial primitives built with Chialisp.\n\nThe standard includes core functions like `ownerOf`, `transferFrom`, and `balanceOf`, along with events such as `Transfer` and `Approval`. Unlike fungible token standards like ERC20, each ERC721 token has a unique ID and cannot be subdivided or merged. While the Circuit codebase implements token-related functionality through components like CAT (Chia Asset Token), treasury management, and auction systems, these represent Chia's native approach to tokenization rather than a direct port of Ethereum standards."
+  },
+  {
+    "terms": [
+      "EIP-712"
+    ],
+    "definition": "# EIP-712\n\nEIP-712 (Ethereum Improvement Proposal 712) is a standard for typed structured data hashing and signing in Ethereum. It enables applications to present human-readable data to users when they're asked to sign messages, rather than showing confusing hexadecimal strings. The standard defines a structured way to hash complex data objects according to their data types, allowing users to clearly see what they're signing. \n\nThis is particularly important for applications like decentralized exchanges where users sign off-chain orders containing multiple parameters. EIP-712 helps prevent phishing attacks by making the signing process more transparent and ensures consistency across different wallet implementations. The signature process includes both the data being signed and a domain separator that identifies the application requesting the signature, providing additional security."
+  },
+  {
+    "terms": [
+      "Time-Weighted Average Market Maker (TWAMM)",
+      "TWAMM"
+    ],
+    "definition": "# Time-Weighted Average Market Maker (TWAMM)\n\nA mechanism in the Circuit Protocol that executes large orders by splitting them into smaller trades spread over time. TWAMM minimizes market impact by calculating time-weighted average prices across multiple blocks, preventing price slippage that would occur with large single trades. In Circuit's implementation, TWAMM is integral to auction mechanisms like surplus auctions, which utilize parameters such as bid time-to-live (`bid_ttl`) and minimum bid increases (`min_bid_increase_bps`) to control execution timing. This approach protects traders from front-running attacks while ensuring optimal price execution for large orders. The system coordinates with treasury operations and vault liquidations to maintain protocol stability during significant market operations."
+  },
+  {
+    "terms": [
+      "Variant Maps"
+    ],
+    "definition": "# Variant Maps\n\nVariant Maps are a pattern for efficiently encoding different states, configurations, or behavior flags within smart contracts. In the Circuit protocol, this pattern is implemented through indexed statute parameters, prefixed message types, and position-based validation checks.\n\nThe codebase uses several mechanisms to implement variant mapping:\n\n1. **Indexed Statutes**: Constants like `STATUTE_PRICE_UPDATE_COUNTER` and `STATUTE_APPROVAL_MOD_HASHES_HASH` map specific indices to protocol parameters.\n\n2. **Prefixed Messages**: Constants like `STATUTE_PREFIX`, `PROTOCOL_PREFIX`, and `PRICE_PREFIX` mark different types of protocol announcements.\n\n3. **Position-based Validation**: Functions like `is-approval-mod` check module identities by their position in a data structure.\n\nThis approach enables gas-efficient operation by compactly representing state variants while maintaining clear, type-safe access to protocol properties. Unlike traditional enumeration types, variant maps in Chialisp leverage the language's functional nature to encode multiple states without verbose type declarations."
+  },
+  {
+    "terms": [
+      "ECDSA"
+    ],
+    "definition": "# ECDSA\n\nECDSA (Elliptic Curve Digital Signature Algorithm) is a cryptographic algorithm that enables digital signatures for secure message verification without revealing private keys. It works by using pairs of mathematically related keys: a private key for signing and a public key for verification.\n\nECDSA operates on elliptic curves over finite fields, offering comparable security to RSA but with significantly smaller key sizes. A typical ECDSA signature consists of two values (r and s), sometimes with a third recovery parameter (v) in blockchain implementations.\n\nIn blockchain systems, ECDSA serves several critical functions:\n\n1. **Transaction Authentication**: Proving ownership of assets by signing transactions with private keys\n2. **Address Generation**: Public keys derived from private keys are hashed to create account addresses\n3. **Message Verification**: Validating that data was signed by the claimed source\n4. **Signature Recovery**: Extracting the signer's public key from a signature and message\n\nECDSA's security relies on the elliptic curve discrete logarithm problem, making it computationally infeasible to derive a private key from its corresponding public key. Modern implementations must carefully handle nonce generation and protect against side-channel attacks to maintain security."
+  },
+  {
+    "terms": [
+      "ERC1271"
+    ],
+    "definition": "# ERC1271\n\nERC1271 is a standard interface for smart contracts to validate signatures. It enables contracts to implement custom signature verification logic, extending signature capabilities beyond Externally Owned Accounts (EOAs). The standard defines an `isValidSignature` function that takes a message hash and a signature, returning a specific magic value (`0x1626ba7e`) if the signature is valid. This allows for complex signature schemes like multi-sig wallets, smart contract wallets, and delegated signing. ERC1271 is crucial for account abstraction, decentralized exchanges with off-chain orders, and Sign-In With Ethereum (SIWE) implementations.\n\n```solidity\ninterface IERC1271 {\n    function isValidSignature(bytes32 hash, bytes memory signature) external view returns (bytes4 magicValue);\n}\n```"
+  },
+  {
+    "terms": [
+      "Application-Specific Sequencing (ASS)",
+      "Application-Specific Sequencing",
+      "(ASS)"
+    ],
+    "definition": "# Application-Specific Sequencing (ASS)\n\nApplication-Specific Sequencing is a blockchain architecture paradigm that allows decentralized applications to define and control the ordering of their own transactions, rather than relying on the default sequencing mechanisms of the underlying blockchain. \n\nIn this model, applications maintain their own specialized mempool and sequencing logic, enabling them to optimize transaction ordering for their specific requirements. This approach allows applications to capture value that would otherwise be extracted as MEV (Miner Extractable Value) by external parties, while still benefiting from the security and liquidity of the underlying settlement layer.\n\nThe code in the Circuit protocol implements this concept through a system of coordinated announcements and message passing between components. For example, in `crt_tail.clsp`, we see announcement creation and validation that enforces specific transaction ordering:\n\n```lisp\n(list CREATE_COIN_ANNOUNCEMENT \"$\") ; for protocol external coins to assert issuance\n(list RECEIVE_MESSAGE 0x3f\n  (concat\n    PROTOCOL_PREFIX\n    (sha256tree\n      (c STATUTES_STRUCT ; this binds us to the same protocol or statutes struct singleton\n        (c target_puzzle_hash delta_amount) ; get approval for target puzzle hash and amount from approver\n      )\n    )\n  )\n  approver_coin_id\n)\n```\n\nThis architecture provides several advantages including greater application sovereignty, enhanced efficiency, improved user experience, and the ability to internalize MEV. However, it also introduces trade-offs in terms of composability with other applications and requires careful design of incentive structures."
+  },
+  {
+    "terms": [
+      "MEV (Maximal Extractable Value)",
+      "MEV",
+      "Maximal Extractable Value"
+    ],
+    "definition": "# MEV (Maximal Extractable Value)\n\nMaximal Extractable Value (MEV) refers to the maximum profit that block producers or other participants can extract from blockchain networks by strategically manipulating transactions—reordering, inserting, or censoring them within blocks. Originally called \"Miner Extractable Value,\" the concept applies to any consensus mechanism where actors can influence transaction ordering.\n\nMEV extraction occurs through strategies like front-running, back-running, sandwich attacks, and arbitrage between decentralized exchanges. These practices can lead to degraded user experience through higher gas costs, transaction delays, and unfavorable execution prices.\n\nIn decentralized protocols like Circuit, MEV mitigation is often implemented as a core feature to protect users and liquidity providers. Mechanisms such as batch processing orders at uniform prices prevent sandwich attacks, while \"Top of Block (ToB) Auctions\" capture and redistribute value that would otherwise be extracted by arbitrageurs. These approaches help ensure fair trade execution, limit transaction censorship, and minimize value leakage from the underlying liquidity pools.\n\nMEV remains a fundamental challenge in blockchain design, driving innovations in protocol architecture that aim to either minimize harmful extraction or democratize access to extraction opportunities."
+  },
+  {
+    "terms": [
+      "Orderbook"
+    ],
+    "definition": "# Romer and Romer Method of Monetary Policy Shocks\n\nThe Romer and Romer method identifies exogenous monetary policy shocks by combining narrative evidence with statistical techniques. Developed by economists Christina and David Romer, this approach isolates changes in monetary policy that are independent of central bank forecasts about future economic conditions.\n\nThe method follows these key steps:\n\n1. Collect data on Federal Reserve policy actions (typically changes in the federal funds rate target)\n\n2. Gather the Federal Reserve's internal forecasts about inflation, output growth, and unemployment (Greenbook forecasts)\n\n3. Regress the policy actions on the forecasts and forecast changes:\n   ```\n   Δff_t = α + β(forecast variables)_t + ε_t\n   ```\n\n4. The residuals (ε_t) represent monetary policy shocks - changes in policy that cannot be explained by the Fed's own information about the economy\n\nThese identified shocks are considered exogenous because they represent policy changes that are not responses to anticipated economic conditions. The Romer and Romer method has been influential in empirical macroeconomics for evaluating the effects of monetary policy on economic variables while addressing the endogeneity problem in monetary policy analysis."
+  },
+  {
+    "terms": [
+      "Top-of-Block (ToB)",
+      "Top-of-Block",
+      "ToB"
+    ],
+    "definition": "# Top-of-Block (ToB)\n\nTop-of-Block (ToB) is a specialized transaction ordering mechanism in blockchain systems that ensures certain transactions are processed with priority at the beginning of a new block. In decentralized exchanges and trading platforms, ToB orders are structured with specific parameters including asset quantities, gas limits, block number validity constraints, and recipient information.\n\nThe key advantage of ToB orders is their prioritized execution before other transactions in a block, which helps prevent front-running attacks, reduces slippage, and provides more deterministic execution outcomes. This is particularly valuable in high-frequency trading or when executing trades in volatile markets.\n\nIn implementation, ToB orders typically include time-based validation checks, coin ID verification, and block height constraints to ensure they're processed within appropriate windows. The mechanism often uses cross-component verification through announcements and messages to maintain transaction validity while providing the priority positioning.\n\nThis transaction ordering strategy represents an important optimization for blockchain-based financial applications where execution sequence can significantly impact trade outcomes and user experience."
+  }
+]

@@ -1,0 +1,98 @@
+{
+  "title": "3.1: Statutes: Overview",
+  "id": "PTP7pIew8LwpvW1rSrBQQI6SYLUetfcTSlmnvty+Gsw=",
+  "originalId": 3608,
+  "position": 7,
+  "steps": [
+    {
+      "type": "textOnly",
+      "description": "Welcome to a guided tour of the `Statutes puzzle component`. In this walkthrough, we’ll explore its state definitions, dependencies, branching logic, helper utilities, and the two programs that interact with it.",
+      "title": "",
+      "id": "42512"
+    },
+    {
+      "type": "highlight",
+      "description": "The `mod` form’s argument list defines all the state stored in the `Statutes` singleton, including hashes, the statutes list, price info, cumulative discount factors, the price update counter, and the solution fields (`governance_curried_args_hash` and `mutation`).",
+      "file": "circuit_puzzles/statutes.clsp",
+      "highlight": [
+        {
+          "start": 1,
+          "end": 19
+        }
+      ],
+      "title": "",
+      "id": "42513"
+    },
+    {
+      "type": "highlight",
+      "description": "These `include` directives pull in **ChiaLisp** core functions, currying support, condition codes, the Statutes-specific utilities, and general helpers.",
+      "file": "circuit_puzzles/statutes.clsp",
+      "highlight": [
+        {
+          "start": 21,
+          "end": 25
+        }
+      ],
+      "title": "",
+      "id": "42514"
+    },
+    {
+      "type": "highlight",
+      "description": "Here’s the top-level dispatch in the `assign` form. It binds `mutation_index` and `operation_mod_hash`, then branches: if an operation is present, it handles the mutate/price-update flow (asserting new state); otherwise, it emits announcement conditions.",
+      "file": "circuit_puzzles/statutes.clsp",
+      "highlight": [
+        {
+          "start": 69,
+          "end": 87
+        }
+      ],
+      "title": "",
+      "id": "42515"
+    },
+    {
+      "type": "highlight",
+      "description": "The statutes utilities define index constants (e.g. `STATUTE_PRICE_UPDATE_COUNTER`, `STATUTE_APPROVAL_MOD_HASHES_HASH`, `STATUTE_CUMULATIVE_INTEREST_DF`, `STATUTE_CUMULATIVE_STABILITY_FEE_DF`, `STATUTE_ORACLE_LAUNCHER_ID`) and advertisement prefixes after including common prefixes.",
+      "file": "circuit_puzzles/include/statutes_utils.clib",
+      "highlight": [
+        {
+          "start": 3,
+          "end": 9
+        }
+      ],
+      "title": "",
+      "id": "42516"
+    },
+    {
+      "type": "highlight",
+      "description": "The `statutes_mutation.clsp` program’s header mirrors the singleton state and adds `mutation_index` and `mutation_value`. It validates the intended mutation and dispatches a CRT-based confirmation message.",
+      "file": "circuit_puzzles/programs/statutes_mutation.clsp",
+      "highlight": [
+        {
+          "start": 1,
+          "end": 7
+        }
+      ],
+      "title": "",
+      "id": "42517"
+    },
+    {
+      "type": "highlight",
+      "description": "The `statutes_update_price.clsp` program binds the existing state, ignores mutation fields, and unpacks the oracle-provided `(price . last_updated . current_timestamp)`. It then proceeds to calculate discount factors and increment the price counter.",
+      "file": "circuit_puzzles/programs/statutes_update_price.clsp",
+      "highlight": [
+        {
+          "start": 1,
+          "end": 7
+        }
+      ],
+      "title": "",
+      "id": "42518"
+    },
+    {
+      "type": "textOnly",
+      "description": "That completes our tour of the four key Statutes files: the core puzzle logic (`statutes.clsp`), its helper utilities (`statutes_utils.clib`), and the two client programs (`statutes_mutation.clsp` and `statutes_update_price.clsp`). You now have a clear picture of how Statutes rules are managed and announced on-chain.",
+      "title": "",
+      "id": "42519"
+    }
+  ]
+}
